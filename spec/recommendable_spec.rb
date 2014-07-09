@@ -12,14 +12,22 @@ describe Recommendable do
   end
 
   describe '.recommended' do
+    before { User.recommended(:movies) }
+
     it 'raises a NameError if the recommendable has no associated class' do
       expect { User.recommended(:books) }.to raise_error
     end
 
     it 'creates an Association for the recommended class' do
-      User.recommended(:movies)
+      expect(User._recommendables[:movies]).to be_instance_of(
+        Recommendable::Association
+      )
+    end
 
-      expect(User._recommendables[:movies]).to be_instance_of(Recommendable::Association)
+    it 'allows accesing an association' do
+      expect(User.reflect_on_recommendable(:movies)).to eq(
+        User._recommendables[:movies]
+      )
     end
   end
 
